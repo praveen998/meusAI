@@ -1,11 +1,128 @@
-<html>
-    <head>
-        <title>My First Web Page</title>
-        </head>
-    <body>
-        <h1>Welcome to My Web Page</h1>
-        <p>This is meus ai
-            
-        </p>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>meusAI - Welcome Screen</title>
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vue 3 Global Build CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#ffffff',         // Crisp clean white canvas
+                            panel: '#f8fafc',      // Soft slate background tint
+                            accentCyan: '#06b6d4',  // Retained sharp brand cyan
+                            accentPurple: '#8b5cf6' // Shifted slightly to a deeper purple for readable text contrast on light backgrounds
+                        }
+                    },
+                    animation: {
+                        'text-gradient': 'textShine 4s linear infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        textShine: {
+                            '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
+                            '50%': { 'background-size': '200% 200%', 'background-position': 'right center' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-brand-bg text-gray-100 min-h-screen flex items-center justify-center p-4 antialiased overflow-hidden select-none">
+
+    <!-- Vue App Mounting Scope Container -->
+    <div id="app" v-cloak class="w-full max-w-sm flex flex-col items-center justify-center text-center px-6 relative">
+
+        <!-- Animated Backdrop Orbs to bring depth to a mobile layout -->
+        <div
+            class="absolute -z-10 w-64 h-64 bg-brand-accentPurple/10 rounded-full blur-[64px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse-slow">
+        </div>
+        <div
+            class="absolute -z-10 w-48 h-48 bg-brand-accentCyan/10 rounded-full blur-[48px] top-1/4 left-1/3 animate-pulse">
+        </div>
+
+        <!-- System Entrance Card Component (Triggers Entry Animations Instantly) -->
+        <div class="space-y-6 flex flex-col items-center">
+
+            <!-- Core Tech Icon Mesh -->
+            <div
+                class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-accentPurple to-brand-accentCyan p-[1px] shadow-[0_0_30px_rgba(6,182,212,0.15)] animate-bounce">
+                <div class="w-full h-full bg-brand-bg rounded-2xl flex items-center justify-center">
+                    <i data-lucide="cpu" class="w-7 h-7 text-brand-accentCyan animate-pulse"></i>
+                </div>
+            </div>
+
+            <!-- Animated Header Typography -->
+            <div class="space-y-2">
+              
+                <!-- Text gradient translation effect -->
+                <h1
+                    class="text-3xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-accentCyan via-white to-brand-accentPurple animate-text-gradient bg-[length:200%_auto]">
+                    Welcome meusAI
+                </h1>
+            </div>
+
+
+            <div class="grid grid-cols-2 grid-rows-1 gap-4">
+               
+                <button type="button"
+                    class="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 border rounded-lg font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5">Login</button>
+                <button type="button"
+                    class="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 border rounded-lg font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5">Sign
+                    Up</button>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Initialization Script Engine Setup -->
+    <script>
+        // Instance building pipeline using traditional Vue Options API configuration layout
+        Vue.createApp({
+            data() {
+                return {
+                    initializedAt: null
+                }
+            },
+            methods: {
+                retriggerGreeting() {
+                    // Quick confirmation trace statement mapped directly inside option methods
+                    console.log("Re-initializing greeting core telemetry.");
+                    window.location.reload();
+                },
+                initIcons() {
+                    this.$nextTick(() => {
+                        if (window.lucide) {
+                            window.lucide.createIcons();
+                        }
+                    });
+                }
+            },
+            mounted() {
+                this.initializedAt = new Date();
+                this.initIcons();
+                console.log("meusAI micro-landing layout initialized.");
+            }
+        }).mount('#app');
+    </script>
+</body>
+
 </html>
