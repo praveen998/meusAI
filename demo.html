@@ -104,7 +104,7 @@
                 <!-- Floating Text Block -->
                 <h2
                     class="animate-float-text font-sans text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-accentCyan to-brand-accentPurple z-10">
-                    {{ name }} ! {{ showElements ? "Welcome to meusAI, your intelligent assistant." : "" }}
+                    {{ name }}
                 </h2>
                 <!-- Simulated Perspective Ground Shadow -->
                 <div class="animate-float-shadow w-24 h-1 bg-gray-400/40 rounded-full mt-1.5"></div>
@@ -122,8 +122,8 @@
                 return {
                     mountDelayTimer: null,
                     initializedAt: null,
-                    name: "Hello Rishi",
-                    showElements: false,
+                    name: "Hello Rishi !",
+                    isComponentActive: true,
                 }
             },
             methods: {
@@ -163,28 +163,26 @@
                     this.showElements = true;
                     console.value = "Delayed initialization complete.";
                     // Run your automation, animations, or voice triggers here
-                }
+                },
+                delay(ms) {
+                    return new Promise(resolve => setTimeout(resolve, ms));
+                },
             },
-            mounted() {
-                this.mountDelayTimer = setTimeout(() => {
-                    this.executeDelayedTask();
-                    this.triggerVoiceWelcome("Welcome to meus AI, your intelligent assistant")
-                    this.mountDelayTimer = setTimeout(() => {
-                        this.showElements = false;
-                        this.name = "How can i assist you today?"
-                        this.triggerVoiceWelcome(this.name);
-                    }, 3500);
-                }, 2500);
-                this.showElements = false;
+            async mounted() {
                 this.triggerVoiceWelcome(this.name);
+                await this.delay(2500);
+                if (!this.isComponentActive) return;
 
+                this.name = "Iam meusAI - Your Personal AI Companion";
+                this.triggerVoiceWelcome(this.name);
+                await this.delay(3500);
+                if (!this.isComponentActive) return;
+                this.name = "How can i assist you today?";
+                this.triggerVoiceWelcome(this.name);
             },
             beforeUnmount() {
-                // CRITICAL SAFETY GATE: Kill the timer if the user leaves the page early
-                if (this.mountDelayTimer) {
-                    clearTimeout(this.mountDelayTimer);
-                    console.log("Mount timer cleared safely to prevent memory leaks.");
-                }
+                this.isComponentActive = false;
+                console.log("Component destroyed. Automation sequence halted safely.");
             },
         }).mount('#app');
     </script>
