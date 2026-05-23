@@ -112,6 +112,68 @@
 
         </div>
 
+        <!-- MAIN WORKSPACE: HYBRID VOICE & TYPING CONTAINER -->
+        <div class="w-full bg-white border border-gray-200/80 rounded-xl p-5 shadow-sm space-y-4">
+
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 text-left">
+                System Command Interface
+            </label>
+
+            <!-- Unified Form Action Wrapper -->
+            <form @submit.prevent="submitCommand" class="relative flex items-center">
+
+                <!-- Interactive Multi-Mode Input Field (Accepts Keyboard Typing AND Voice Outputs) -->
+                <input type="text" v-model="voiceInputText" placeholder="Type a command or click mic to speak..."
+                    class="w-full bg-gray-50/50 border border-gray-200 focus:border-brand-accentPurple focus:bg-white focus:ring-2 focus:ring-brand-accentPurple/10 rounded-lg pl-4 pr-24 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition">
+
+                <!-- Right-Aligned Action Control Group Panel -->
+                <div class="absolute right-2 flex items-center space-x-1">
+
+                    <!-- Voice Input Action Trigger -->
+                    <button type="button" @click="toggleVoiceRecognition"
+                        :class="isListening ? 'text-rose-500 bg-rose-50 border-rose-200' : 'text-gray-400 hover:text-brand-accentPurple hover:bg-gray-50 border-transparent'"
+                        class="p-2 rounded-md border transition-all duration-200 active:scale-95 flex items-center justify-center focus:outline-none"
+                        title="Toggle Voice Input (Malayalam/English)">
+                        <div class="relative w-5 h-5 flex items-center justify-center">
+                            <!-- Audio Stream Active Visual Indicators -->
+                            <span v-if="isListening"
+                                class="absolute inline-flex h-full w-full rounded-full bg-rose-400/30 animate-ping"></span>
+                            <span v-if="isListening"
+                                class="absolute inline-flex h-3 w-3 rounded-full bg-rose-500 animate-pulse"></span>
+
+                            <!-- SVG Microphone Vector -->
+                            <svg v-if="!isListening" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                <line x1="12" x2="12" y1="19" y2="22" />
+                            </svg>
+                        </div>
+                    </button>
+
+                    <!-- Manual Submission Action Trigger -->
+                    <button type="submit" :disabled="!voiceInputText.trim()"
+                        class="p-2 rounded-md transition-all duration-200 flex items-center justify-center focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed text-brand-accentPurple disabled:text-gray-300"
+                        title="Submit Command">
+                        <!-- SVG Paper Airplane Submit Vector -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Streaming Audio Processing Telemetry Feedback -->
+            <div v-if="isListening"
+                class="flex items-center space-x-2 text-xs text-rose-500 font-medium tracking-wide animate-pulse text-left">
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                <span>Listening... Speak clearly into your device microphone.</span>
+            </div>
+        </div>
+
     </div>
 
     <!-- Application Initialization Script Engine Setup -->
@@ -124,9 +186,74 @@
                     initializedAt: null,
                     name: "ഹലോ ഋഷികേശ്",
                     isComponentActive: true,
+                    voiceInputText: '',
+                    isListening: false,
+                    recognition: null,
                 }
             },
             methods: {
+                submitCommand() {
+                    if (!this.voiceInputText.trim()) return;
+
+                    console.log("Executing query payload:", this.voiceInputText);
+                    this.triggerVoiceWelcome(this.voiceInputText);
+                    this.voiceInputText = '';
+                     
+                },
+                initializeSpeechEngine() {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+                    if (!SpeechRecognition) {
+                        console.warn("Speech recognition not supported on this browser ecosystem.");
+                        return;
+                    }
+
+                    this.recognition = new SpeechRecognition();
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+
+                    // CHANGED: Force the acoustic model to process Malayalam audio patterns
+                    this.recognition.lang = 'ml-IN';
+
+                    this.recognition.onstart = () => {
+                        this.isListening = true;
+                    };
+
+                    this.recognition.onresult = (event) => {
+                        // The text result will be returned written in native Malayalam script (മലയാളം)
+                        const textResult = event.results[0][0].transcript;
+                        this.voiceInputText = textResult;
+
+                        this.handleVoiceCommandDispatched(textResult);
+                    };
+
+                    this.recognition.onerror = (error) => {
+                        console.error("Speech engine error:", error.error);
+                        this.isListening = false;
+                    };
+
+                    this.recognition.onend = () => {
+                        this.isListening = false;
+                    };
+                },
+                toggleVoiceRecognition() {
+                    if (!this.recognition) {
+                        alert("Speech interface API unavailable on this terminal system browser.");
+                        return;
+                    }
+
+                    if (this.isListening) {
+                        this.recognition.stop();
+                    } else {
+                        // Clears prior data strings before beginning a fresh session stream capture
+                        this.voiceInputText = '';
+                        this.recognition.start();
+                    }
+                },
+                handleVoiceCommandDispatched(commandText) {
+                    console.log("Processing captured voice query string:", commandText);
+                    // Put your form submission or AI prompt forwarding actions here!
+                },
                 triggerVoiceWelcome(text) {
                     if (!('speechSynthesis' in window)) return;
 
@@ -174,15 +301,15 @@
                 },
             },
             async mounted() {
+                await this.delay(250);
                 this.triggerVoiceWelcome(this.name);
                 await this.delay(2500);
                 if (!this.isComponentActive) return;
 
-                this.name = "എന്ത് വേണം ?";
-                this.triggerVoiceWelcome("എന്ത് വേണം ? പറയൂ ");
+                this.name = "?";
+                this.triggerVoiceWelcome("എന്ത് വേണം ?");
                 await this.delay(3500);
                 if (!this.isComponentActive) return;
-                
             },
             beforeUnmount() {
                 this.isComponentActive = false;
