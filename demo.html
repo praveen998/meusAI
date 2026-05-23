@@ -104,7 +104,7 @@
                 <!-- Floating Text Block -->
                 <h2
                     class="animate-float-text font-sans text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-accentCyan to-brand-accentPurple z-10">
-                    Hello {{ name }} ! {{ showElements ? "Welcome to meusAI, your intelligent assistant." : "" }}
+                    {{ name }} ! {{ showElements ? "Welcome to meusAI, your intelligent assistant." : "" }}
                 </h2>
                 <!-- Simulated Perspective Ground Shadow -->
                 <div class="animate-float-shadow w-24 h-1 bg-gray-400/40 rounded-full mt-1.5"></div>
@@ -122,7 +122,7 @@
                 return {
                     mountDelayTimer: null,
                     initializedAt: null,
-                    name: "Rishi",
+                    name: "Hello Rishi",
                     showElements: false,
                 }
             },
@@ -171,12 +171,12 @@
                     this.triggerVoiceWelcome("Welcome to meus AI, your intelligent assistant")
                     this.mountDelayTimer = setTimeout(() => {
                         this.showElements = false;
+                        this.name = "How can i assist you today?"
+                        this.triggerVoiceWelcome(this.name);
                     }, 3500);
-
                 }, 2500);
                 this.showElements = false;
-                this.triggerVoiceWelcome("hello,"+this.name);
-
+                this.triggerVoiceWelcome(this.name);
 
             },
             beforeUnmount() {
