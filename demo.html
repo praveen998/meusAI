@@ -122,30 +122,35 @@
                 return {
                     mountDelayTimer: null,
                     initializedAt: null,
-                    name: "Hello Rishi !",
+                    name: "ഹലോ ഋഷികേശ്",
                     isComponentActive: true,
                 }
             },
             methods: {
-                triggerVoiceWelcome(word) {
-                    // 1. Verify browser supports the synthesis architecture
-                    if ('speechSynthesis' in window) {
-                        const message = new SpeechSynthesisUtterance();
-                        message.text = word;
-                        message.rate = 1.0;  // Speed vector (0.1 to 10)
-                        message.pitch = 1.1; // Tone height adjustment (0 to 2)
-                        message.volume = 0.8; // Amplitude capacity slider (0 to 1)
+                triggerVoiceWelcome(text) {
+                    if (!('speechSynthesis' in window)) return;
 
-                        // Optional: Choose a specific built-in system voice profile
-                        const voices = window.speechSynthesis.getVoices();
-                        if (voices.length > 0) {
-                            // Pick a premium voice option if present, else fallback
-                            message.voice = voices.find(v => v.lang.includes('en')) || voices[0];
-                        }
+                    window.speechSynthesis.cancel();
 
-                        // Execute processing queue invocation
-                        window.speechSynthesis.speak(message);
+                    const utterance = new SpeechSynthesisUtterance(text);
+
+                    // 1. Get all available voices on the user's device
+                    const voices = window.speechSynthesis.getVoices();
+
+                    // 2. Look for a voice matching the Malayalam language code 'ml-IN'
+                    const malayalamVoice = voices.find(voice => voice.lang === 'ml-IN' || voice.lang.startsWith('ml'));
+
+                    if (malayalamVoice) {
+                        utterance.voice = malayalamVoice;
+                        utterance.lang = 'ml-IN';
+                    } else {
+                        // Fallback: If no Malayalam voice is installed, default to English/System
+                        console.warn("Malayalam voice not found on this device. Using default.");
+                        utterance.lang = 'en-US';
                     }
+
+                    utterance.rate = 1.0;
+                    window.speechSynthesis.speak(utterance);
                 },
                 retriggerGreeting() {
                     // Quick confirmation trace statement mapped directly inside option methods
@@ -173,12 +178,11 @@
                 await this.delay(2500);
                 if (!this.isComponentActive) return;
 
-                this.name = "Iam meusAI - Your Personal AI Companion";
-                this.triggerVoiceWelcome(this.name);
+                this.name = "എന്ത് വേണം ?";
+                this.triggerVoiceWelcome("എന്ത് വേണം ? പറയൂ ");
                 await this.delay(3500);
                 if (!this.isComponentActive) return;
-                this.name = "How can i assist you today?";
-                this.triggerVoiceWelcome(this.name);
+                
             },
             beforeUnmount() {
                 this.isComponentActive = false;
