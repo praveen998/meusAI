@@ -131,7 +131,7 @@
                     // 1. Verify browser supports the synthesis architecture
                     if ('speechSynthesis' in window) {
                         const message = new SpeechSynthesisUtterance();
-                        message.text = "Hello " + word;
+                        message.text = word;
                         message.rate = 1.0;  // Speed vector (0.1 to 10)
                         message.pitch = 1.1; // Tone height adjustment (0 to 2)
                         message.volume = 0.8; // Amplitude capacity slider (0 to 1)
@@ -168,14 +168,14 @@
             mounted() {
                 this.mountDelayTimer = setTimeout(() => {
                     this.executeDelayedTask();
-                    this.triggerVoiceWelcome("Welcome to meusAI, your intelligent assistant")
+                    this.triggerVoiceWelcome("Welcome to meus AI, your intelligent assistant")
                     this.mountDelayTimer = setTimeout(() => {
                         this.showElements = false;
-                    }, 2500);
+                    }, 3500);
 
                 }, 2500);
                 this.showElements = false;
-                this.triggerVoiceWelcome(this.name);
+                this.triggerVoiceWelcome("hello,"+this.name);
 
 
             },
