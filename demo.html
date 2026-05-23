@@ -168,6 +168,7 @@
             mounted() {
                 this.mountDelayTimer = setTimeout(() => {
                     this.executeDelayedTask();
+                    this.triggerVoiceWelcome("Welcome to meusAI, your intelligent assistant")
                     this.mountDelayTimer = setTimeout(() => {
                         this.showElements = false;
                     }, 2500);
