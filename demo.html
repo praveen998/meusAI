@@ -294,7 +294,7 @@
                         utterance.lang = 'en-IN'; // Using Indian-English sounds more natural as an alternative fallback
                     }
 
-                    utterance.rate = 0.80; // Slightly reduced rate makes synthesized regional languages clear
+                    utterance.rate = 0.95; // Slightly reduced rate makes synthesized regional languages clear
                     window.speechSynthesis.speak(utterance);
                 },
                 retriggerGreeting() {
@@ -324,7 +324,7 @@
                 await this.delay(2500);
                 if (!this.isComponentActive) return;
 
-                this.name = "?";
+                this.name = "eeee";
                 this.triggerVoiceWelcome("പറയിചേട്ടാ ?");
                 await this.delay(2500);
                 if (!this.isComponentActive) return;
