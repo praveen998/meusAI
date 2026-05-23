@@ -307,9 +307,11 @@
                 if (!this.isComponentActive) return;
 
                 this.name = "?";
-                this.triggerVoiceWelcome("എന്ത് വേണം ?");
-                await this.delay(3500);
+                this.triggerVoiceWelcome("പറയിചേട്ടാ ?");
+                await this.delay(2500);
                 if (!this.isComponentActive) return;
+
+                this.name = "";
             },
             beforeUnmount() {
                 this.isComponentActive = false;
