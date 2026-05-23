@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>meusAI - Welcome Screen</title>
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vue 3 Global Build CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#ffffff',         // Crisp clean white canvas
+                            panel: '#f8fafc',      // Soft slate background tint
+                            accentCyan: '#06b6d4',  // Retained sharp brand cyan
+                            accentPurple: '#8b5cf6' // Shifted slightly to a deeper purple for readable text contrast on light backgrounds
+                        }
+                    },
+                    animation: {
+                        'text-gradient': 'textShine 4s linear infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        textShine: {
+                            '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
+                            '50%': { 'background-size': '200% 200%', 'background-position': 'right center' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+
+
+
+    <style>
+        @keyframes floating {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-25px);
+            }
+        }
+
+        @keyframes shadow-shrink {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+                filter: blur(4px);
+            }
+
+            50% {
+                transform: scale(0.85);
+                opacity: 0.2;
+                filter: blur(6px);
+            }
+        }
+
+        .animate-float-text {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        .animate-float-shadow {
+            animation: shadow-shrink 3s ease-in-out infinite;
+        }
+    </style>
+
+
+</head>
+
+<body
+    class="bg-brand-bg text-gray-100 min-h-screen flex items-center justify-center p-4 antialiased overflow-hidden select-none">
+
+    <!-- Vue App Mounting Scope Container -->
+    <div id="app" v-cloak class="w-full max-w-sm flex flex-col items-center justify-center text-center px-6 relative">
+
+
+        <!-- System Entrance Card Component (Triggers Entry Animations Instantly) -->
+        <div class="space-y-6 flex flex-col items-center">
+
+
+
+
+            <!-- UI Implementation Example -->
+            <div class="flex flex-col items-center justify-center p-4">
+                <!-- Floating Text Block -->
+                <h2
+                    class="animate-float-text font-sans text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-accentCyan to-brand-accentPurple z-10">
+                    Hello {{ name }} !
+                </h2>
+                <!-- Simulated Perspective Ground Shadow -->
+                <div class="animate-float-shadow w-24 h-1 bg-gray-400/40 rounded-full mt-1.5"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Application Initialization Script Engine Setup -->
+    <script>
+        // Instance building pipeline using traditional Vue Options API configuration layout
+        Vue.createApp({
+            data() {
+                return {
+                    initializedAt: null,
+                    name: "Praveen",
+                }
+            },
+            methods: {
+                triggerVoiceWelcome() {
+                    // 1. Verify browser supports the synthesis architecture
+                    if ('speechSynthesis' in window) {
+                        const message = new SpeechSynthesisUtterance();
+                        message.text = "Authentication node initialized. Please enter your operator keys.";
+                        message.rate = 1.0;  // Speed vector (0.1 to 10)
+                        message.pitch = 1.1; // Tone height adjustment (0 to 2)
+                        message.volume = 0.8; // Amplitude capacity slider (0 to 1)
+
+                        // Optional: Choose a specific built-in system voice profile
+                        const voices = window.speechSynthesis.getVoices();
+                        if (voices.length > 0) {
+                            // Pick a premium voice option if present, else fallback
+                            message.voice = voices.find(v => v.lang.includes('en')) || voices[0];
+                        }
+
+                        // Execute processing queue invocation
+                        window.speechSynthesis.speak(message);
+                    }
+                },
+                retriggerGreeting() {
+                    // Quick confirmation trace statement mapped directly inside option methods
+                    console.log("Re-initializing greeting core telemetry.");
+                    window.location.reload();
+                },
+                initIcons() {
+                    this.$nextTick(() => {
+                        if (window.lucide) {
+                            window.lucide.createIcons();
+                        }
+                    });
+                }
+            },
+            mounted() {
+                this.initializedAt = new Date();
+                this.initIcons();
+                this.triggerVoiceWelcome();
+                console.log("meusAI micro-landing layout initialized.");
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>

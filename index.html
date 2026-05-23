@@ -50,16 +50,10 @@
     <!-- Vue App Mounting Scope Container -->
     <div id="app" v-cloak class="w-full max-w-sm flex flex-col items-center justify-center text-center px-6 relative">
 
-        <!-- Animated Backdrop Orbs to bring depth to a mobile layout -->
-        <div
-            class="absolute -z-10 w-64 h-64 bg-brand-accentPurple/10 rounded-full blur-[64px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse-slow">
-        </div>
-        <div
-            class="absolute -z-10 w-48 h-48 bg-brand-accentCyan/10 rounded-full blur-[48px] top-1/4 left-1/3 animate-pulse">
-        </div>
+
 
         <!-- System Entrance Card Component (Triggers Entry Animations Instantly) -->
-        <div class="space-y-6 flex flex-col items-center">
+        <div v-if="screen === 'welcome'" class="space-y-6 flex flex-col items-center">
 
             <!-- Core Tech Icon Mesh -->
             <div
@@ -71,7 +65,7 @@
 
             <!-- Animated Header Typography -->
             <div class="space-y-2">
-              
+
                 <!-- Text gradient translation effect -->
                 <h1
                     class="text-3xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-accentCyan via-white to-brand-accentPurple animate-text-gradient bg-[length:200%_auto]">
@@ -81,13 +75,112 @@
 
 
             <div class="grid grid-cols-2 grid-rows-1 gap-4">
-               
-                <button type="button"
-                    class="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 border rounded-lg font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5">Login</button>
-                <button type="button"
-                    class="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 border rounded-lg font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5">Sign
-                    Up</button>
 
+                <button type="button" @click="screen='login'"
+                    class="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none border rounded-lg font-medium text-sm px-4 py-2.5 text-center leading-5">
+                    Login
+                </button>
+                <button type="button"
+                    class="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none  border rounded-lg font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5">Sign
+                    Up</button>
+            </div>
+        </div>
+
+
+
+        <!-- STATE: POPUP/MODAL BACKGROUND CONTAINER -->
+        <div v-if="screen === 'login'"
+            class="w-full bg-brand-panel border border-gray-100 rounded-2xl p-6 sm:p-8 shadow-xl shadow-gray-200/50 flex flex-col items-center space-y-6 animate-fade-in">
+
+            <!-- Header Branding Group -->
+            <div class="text-center space-y-1 w-full">
+                <h2 class="text-xl font-black tracking-tight text-gray-900">
+                    Sign into your account
+                </h2>
+                <p class="text-xs text-gray-400">
+                    Join meusAI to initialize automated agent pipelines.
+                </p>
+            </div>
+
+            <!-- Main Authentication Workspace Wrapper -->
+            <div class="w-full bg-white border border-gray-200/80 rounded-xl p-5 sm:p-6 shadow-sm space-y-4">
+
+                <!-- Social OAuth Provider Action Group -->
+                <div class="space-y-2">
+                    <!-- Google Login Action Button -->
+                    <button @click="authenticateOAuth('Google')"
+                        class="w-full bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold py-2.5 px-4 rounded-lg shadow-sm transition active:scale-[0.99] flex items-center justify-center space-x-3">
+                        <!-- SVG Brand Representation Vector for Google -->
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" width="100%" height="100%">
+                            <path fill="#EA4335"
+                                d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.27 0 3.198 2.698 1.24 6.65l4.026 3.115z" />
+                            <path fill="#34A853"
+                                d="M16.04 15.345c-1.077.736-2.423 1.164-4.04 1.164-2.955 0-5.464-1.991-6.355-4.673L1.58 14.93C3.623 19.045 7.89 21.818 12 21.818c3.155 0 6.045-1.036 8.218-2.827l-4.178-3.646z" />
+                            <path fill="#4285F4"
+                                d="M23.49 12.273c0-.727-.073-1.445-.19-2.145H12v4.545h6.455a5.57 5.57 0 0 1-2.418 3.646l4.177 3.646c2.446-2.254 3.864-5.582 3.864-9.691z" />
+                            <path fill="#FBBC05"
+                                d="M5.645 11.836A6.81 6.81 0 0 1 5.264 12c0-.573.064-1.127.182-1.664L1.42 7.22A11.95 11.95 0 0 0 0 12c0 1.745.373 3.4 1.04 4.909l4.605-3.073z" />
+                        </svg>
+                        <span>Continue with Google</span>
+                    </button>
+
+
+                </div>
+
+                <!-- Structural Divider Element -->
+                <div class="relative flex py-2 items-center">
+                    <div class="flex-grow border-t border-gray-100"></div>
+                    <span
+                        class="flex-shrink mx-3 text-[10px] font-bold uppercase tracking-wider text-gray-400 font-mono">Or
+                        use credentials</span>
+                    <div class="flex-grow border-t border-gray-100"></div>
+                </div>
+
+                <!-- Traditional Email Entry Fields -->
+                <form @submit.prevent="handleSignupSubmit" class="space-y-3.5 text-left">
+                    <div class="space-y-1">
+                        <label for="reg-email"
+                            class="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                            Email Address
+                        </label>
+                        <input id="reg-email" type="email" v-model="authForm.email" placeholder="operator@network.com"
+                            class="w-full bg-gray-50/50 border border-gray-200 focus:border-brand-accentPurple focus:bg-white focus:ring-2 focus:ring-brand-accentPurple/10 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-400 outline-none transition"
+                            required>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label for="reg-password"
+                            class="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                            Choose Password
+                        </label>
+                        <input id="reg-password" type="password" v-model="authForm.password"
+                            placeholder="Minimum 8 characters"
+                            class="w-full bg-gray-50/50 border border-gray-200 focus:border-brand-accentPurple focus:bg-white focus:ring-2 focus:ring-brand-accentPurple/10 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-400 outline-none transition"
+                            required>
+                    </div>
+
+                    <!-- Native Form Submission Trigger Button -->
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-brand-accentPurple to-brand-accentCyan hover:opacity-95 active:scale-[0.99] text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-md transition pt-2">
+                        Sign In
+                    </button>
+                </form>
+            </div>
+
+            <!-- Footnote Operational Links Toggle -->
+            <div class="w-full flex flex-col items-center space-y-2 pt-1 border-t border-gray-100/60">
+                <p class="text-xs text-gray-500">
+                    create new account?
+                    <button @click="screen = 'signup'"
+                        class="font-bold text-brand-accentCyan hover:underline bg-transparent border-none p-0 cursor-pointer transition-colors duration-150">
+                        Sign Up
+                    </button>
+                </p>
+                <p class="text-[10px] text-gray-400 text-center max-w-[280px] leading-normal">
+                    Need assistance? <a href="./demo.html" class="hover:text-gray-600 underline decoration-gray-300">Contact Node
+                        Administrator</a> or view <a href="#"
+                        class="hover:text-gray-600 underline decoration-gray-300">System Status</a>.
+                </p>
             </div>
         </div>
 
@@ -99,10 +192,24 @@
         Vue.createApp({
             data() {
                 return {
-                    initializedAt: null
+                    initializedAt: null,
+                    screen: "welcome",
+                    authForm: {
+                        email: '',
+                        password: ''
+                    }
                 }
             },
             methods: {
+
+                authenticateOAuth(provider) {
+                    console.log(`Redirecting securely to ${provider} OAuth federation node.`);
+                    alert(`Connecting authentication link with ${provider}...`);
+                },
+                handleSignupSubmit() {
+                    console.log("Transmitting identity schema keys:", this.authForm);
+                    alert(`Account created successfully for: ${this.authForm.email}`);
+                },
                 retriggerGreeting() {
                     // Quick confirmation trace statement mapped directly inside option methods
                     console.log("Re-initializing greeting core telemetry.");
