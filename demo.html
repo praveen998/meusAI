@@ -96,7 +96,13 @@
         <!-- System Entrance Card Component (Triggers Entry Animations Instantly) -->
         <div class="space-y-6 flex flex-col items-center">
 
-
+            <!-- Core Tech Icon Mesh -->
+            <div v-if="name === ''"
+                class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-accentPurple to-brand-accentCyan p-[1px] shadow-[0_0_30px_rgba(6,182,212,0.15)] animate-bounce">
+                <div class="w-full h-full bg-brand-bg rounded-2xl flex items-center justify-center">
+                    <i data-lucide="cpu" class="w-7 h-7 text-brand-accentCyan animate-pulse"></i>
+                </div>
+            </div>
 
 
             <!-- UI Implementation Example -->
@@ -123,7 +129,8 @@
             <form @submit.prevent="submitCommand" class="relative flex items-center">
 
                 <!-- Interactive Multi-Mode Input Field (Accepts Keyboard Typing AND Voice Outputs) -->
-                <input type="text" v-model="voiceInputText" placeholder="Type a command or click mic to speak..."
+                <input type="text" v-model="voiceInputText" @keydown.enter.prevent="submitCommand"
+                    placeholder="Type a command or click mic to speak..."
                     class="w-full bg-gray-50/50 border border-gray-200 focus:border-brand-accentPurple focus:bg-white focus:ring-2 focus:ring-brand-accentPurple/10 rounded-lg pl-4 pr-24 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition">
 
                 <!-- Right-Aligned Action Control Group Panel -->
@@ -198,7 +205,7 @@
                     console.log("Executing query payload:", this.voiceInputText);
                     this.triggerVoiceWelcome(this.voiceInputText);
                     this.voiceInputText = '';
-                     
+
                 },
                 initializeSpeechEngine() {
                     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -237,17 +244,23 @@
                     };
                 },
                 toggleVoiceRecognition() {
+                    // Check if the engine loaded cleanly during mount
                     if (!this.recognition) {
-                        alert("Speech interface API unavailable on this terminal system browser.");
+                        // Drop the native alert box and display a clean text message in the box layout instead
+                        this.voiceInputText = "⚠️ Speech input unavailable on this browser. Please type manually.";
                         return;
                     }
 
                     if (this.isListening) {
                         this.recognition.stop();
                     } else {
-                        // Clears prior data strings before beginning a fresh session stream capture
                         this.voiceInputText = '';
-                        this.recognition.start();
+                        try {
+                            this.recognition.start();
+                        } catch (err) {
+                            console.error("Engine failed to start:", err);
+                            this.isListening = false;
+                        }
                     }
                 },
                 handleVoiceCommandDispatched(commandText) {
@@ -258,25 +271,30 @@
                     if (!('speechSynthesis' in window)) return;
 
                     window.speechSynthesis.cancel();
-
                     const utterance = new SpeechSynthesisUtterance(text);
 
-                    // 1. Get all available voices on the user's device
+                    // 1. Get all available voices on the user's terminal system
                     const voices = window.speechSynthesis.getVoices();
 
-                    // 2. Look for a voice matching the Malayalam language code 'ml-IN'
-                    const malayalamVoice = voices.find(voice => voice.lang === 'ml-IN' || voice.lang.startsWith('ml'));
+                    // 2. Optimized Selection: Prioritize localized Indian Malayalam configurations
+                    const malayalamVoice = voices.find(voice =>
+                        voice.lang === 'ml-IN' ||
+                        voice.lang === 'ml_IN' ||
+                        voice.name.toLowerCase().includes('malayalam') ||
+                        voice.name.toLowerCase().includes('മലയാളം')
+                    );
 
                     if (malayalamVoice) {
                         utterance.voice = malayalamVoice;
                         utterance.lang = 'ml-IN';
+                        console.log(`Successfully mapped voice to native model: ${malayalamVoice.name}`);
                     } else {
-                        // Fallback: If no Malayalam voice is installed, default to English/System
-                        console.warn("Malayalam voice not found on this device. Using default.");
-                        utterance.lang = 'en-US';
+                        // Fallback: Default to local English profile if Malayalam is missing from local system hardware
+                        console.warn("Malayalam native pack not found on this device. Falling back to English.");
+                        utterance.lang = 'en-IN'; // Using Indian-English sounds more natural as an alternative fallback
                     }
 
-                    utterance.rate = 1.0;
+                    utterance.rate = 0.80; // Slightly reduced rate makes synthesized regional languages clear
                     window.speechSynthesis.speak(utterance);
                 },
                 retriggerGreeting() {
@@ -310,7 +328,6 @@
                 this.triggerVoiceWelcome("പറയിചേട്ടാ ?");
                 await this.delay(2500);
                 if (!this.isComponentActive) return;
-
                 this.name = "";
             },
             beforeUnmount() {
