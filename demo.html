@@ -104,7 +104,7 @@
                 <!-- Floating Text Block -->
                 <h2
                     class="animate-float-text font-sans text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-accentCyan to-brand-accentPurple z-10">
-                    Hello {{ name }} !
+                    Hello {{ name }} ! {{ showElements ? "Welcome to meusAI, your intelligent assistant." : "" }}
                 </h2>
                 <!-- Simulated Perspective Ground Shadow -->
                 <div class="animate-float-shadow w-24 h-1 bg-gray-400/40 rounded-full mt-1.5"></div>
@@ -120,8 +120,10 @@
         Vue.createApp({
             data() {
                 return {
+                    mountDelayTimer: null,
                     initializedAt: null,
-                    name: "Praveen",
+                    name: "Rishi",
+                    showElements: false,
                 }
             },
             methods: {
@@ -156,14 +158,33 @@
                             window.lucide.createIcons();
                         }
                     });
+                },
+                executeDelayedTask() {
+                    this.showElements = true;
+                    console.value = "Delayed initialization complete.";
+                    // Run your automation, animations, or voice triggers here
                 }
             },
             mounted() {
-                this.initializedAt = new Date();
-                this.initIcons();
+                this.mountDelayTimer = setTimeout(() => {
+                    this.executeDelayedTask();
+                    this.mountDelayTimer = setTimeout(() => {
+                        this.showElements = false;
+                    }, 2500);
+
+                }, 2500);
+                this.showElements = false;
                 this.triggerVoiceWelcome(this.name);
-                console.log("meusAI micro-landing layout initialized.");
-            }
+
+
+            },
+            beforeUnmount() {
+                // CRITICAL SAFETY GATE: Kill the timer if the user leaves the page early
+                if (this.mountDelayTimer) {
+                    clearTimeout(this.mountDelayTimer);
+                    console.log("Mount timer cleared safely to prevent memory leaks.");
+                }
+            },
         }).mount('#app');
     </script>
 </body>
